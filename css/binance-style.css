@@ -5,7 +5,7 @@
   --text-color: #ffffff;
   --text-secondary: #848e9c;
   --border-color: #2a2f37;
-  --primary-color: #f0b90b;
+  --primary-color: #6366f1;
   --positive-color: #03a66d;
   --negative-color: #cf304a;
   --neutral-color: #848e9c;
@@ -885,4 +885,3 @@ button {
 .mb-16 {
   margin-bottom: 16px;
 }
-
