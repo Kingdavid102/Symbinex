@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Wallet - Assets</title>
+  <link rel="stylesheet" href="css/binance-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .assets-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background-color: var(--background-color);
+    }
+    
+    .wallet-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 16px;
+    }
+    
+    .wallet-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #ff5722;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .wallet-name {
+      font-weight: 500;
+      font-size: 18px;
+    }
+    
+    .main-balance {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 16px;
+    }
+    
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 0 16px 24px;
+    }
+    
+    .action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .action-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background-color: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-color);
+      font-size: 20px;
+    }
+    
+    .action-label {
+      font-size: 14px;
+    }
+    
+    .asset-tabs {
+      display: flex;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .asset-tab {
+      padding: 12px 24px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      position: relative;
+    }
+    
+    .asset-tab.active {
+      color: var(--text-color);
+    }
+    
+    .asset-tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--text-color);
+    }
+    
+    .token-list {
+      padding: 0;
+    }
+    
+    .token-item {
+      display: flex;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .token-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 16px;
+      overflow: hidden;
+    }
+    
+    .token-info {
+      flex: 1;
+    }
+    
+    .token-name {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    
+    .token-price {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    
+    .token-change {
+      color: var(--negative-color);
+    }
+    
+    .token-change.positive {
+      color: var(--positive-color);
+    }
+    
+    .token-balance {
+      text-align: right;
+    }
+    
+    .token-amount {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    
+    .token-value {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    
+    .sort-button {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Assets Header -->
+    <div class="assets-header">
+      <button class="menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h2>Assets</h2>
+      <button class="menu-btn">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+
+    <!-- Wallet Selector -->
+    <div class="wallet-selector">
+      <div class="wallet-icon">
+        <i class="fas fa-wallet"></i>
+      </div>
+      <div class="wallet-name">My Wallet</div>
+      <i class="fas fa-chevron-down"></i>
+      <div style="flex: 1;"></div>
+      <button class="copy-btn">
+        <i class="far fa-copy"></i>
+      </button>
+    </div>
+
+    <!-- Main Balance -->
+    <h1 class="main-balance" id="mainBalance">$<span id="balanceValue"><0.00001</span></h1>
+
+    <!-- Action Grid -->
+    <div class="action-grid">
+      <a href="send.html" class="action-item">
+        <div class="action-icon">
+          <i class="fas fa-arrow-up" style="color: #f0b90b;"></i>
+        </div>
+        <div class="action-label">Send</div>
+      </a>
+      <a href="receive.html" class="action-item">
+        <div class="action-icon">
+          <i class="fas fa-arrow-down" style="color: #f0b90b;"></i>
+        </div>
+        <div class="action-label">Receive</div>
+      </a>
+      <a href="transactions.html" class="action-item">
+        <div class="action-icon">
+          <i class="fas fa-history" style="color: #f0b90b;"></i>
+        </div>
+        <div class="action-label">History</div>
+      </a>
+      <a href="#" class="action-item">
+        <div class="action-icon">
+          <i class="fas fa-check-circle" style="color: #f0b90b;"></i>
+        </div>
+        <div class="action-label">Approvals</div>
+      </a>
+    </div>
+
+    <!-- Asset Tabs -->
+    <div class="asset-tabs">
+      <button class="asset-tab active">Tokens</button>
+      <button class="asset-tab">NFTs</button>
+      <div style="flex: 1;"></div>
+      <button class="sort-button">
+        <i class="fas fa-sort"></i>
+      </button>
+    </div>
+
+    <!-- Token List -->
+    <div class="token-list" id="tokenList">
+      <!-- TRX Token -->
+      <div class="token-item" data-token="TRX">
+        <div class="token-icon">
+          <img src="img/trx.png" alt="TRX" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23FF0000\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+        </div>
+        <div class="token-info">
+          <div class="token-name">TRX</div>
+          <div class="token-price">
+            <span id="trxPrice">$0.066762</span>
+            <span class="token-change negative">-9.98%</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <div class="token-amount" id="trxAmount">0</div>
+          <div class="token-value" id="trxValue">$0</div>
+        </div>
+      </div>
+
+      <!-- USDT Token -->
+      <div class="token-item" data-token="USDT">
+        <div class="token-icon">
+          <img src="img/usdt.png" alt="USDT" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%2326A17B\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+        </div>
+        <div class="token-info">
+          <div class="token-name">USDT</div>
+          <div class="token-price">
+            <span id="usdtPrice">$1.00</span>
+            <span class="token-change">0.00%</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <div class="token-amount" id="usdtAmount">0</div>
+          <div class="token-value" id="usdtValue">$0</div>
+        </div>
+      </div>
+
+      <!-- USDC Token -->
+      <div class="token-item" data-token="USDC">
+        <div class="token-icon">
+          <img src="img/usdc.png" alt="USDC" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%232775CA\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+        </div>
+        <div class="token-info">
+          <div class="token-name">USDC</div>
+          <div class="token-price">
+            <span id="usdcPrice">$1.01</span>
+            <span class="token-change positive">+0.01%</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <div class="token-amount" id="usdcAmount">0</div>
+          <div class="token-value" id="usdcValue">$0</div>
+        </div>
+      </div>
+
+      <!-- BNB Token -->
+      <div class="token-item" data-token="BNB">
+        <div class="token-icon">
+          <img src="img/bnb.png" alt="BNB" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23F3BA2F\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+        </div>
+        <div class="token-info">
+          <div class="token-name">BNB</div>
+          <div class="token-price">
+            <span id="bnbPrice">$610.38</span>
+            <span class="token-change positive">+0.73%</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <div class="token-amount" id="bnbAmount">0</div>
+          <div class="token-value" id="bnbValue">$0</div>
+        </div>
+      </div>
+
+      <!-- SOL Token -->
+      <div class="token-item" data-token="SOL">
+        <div class="token-icon">
+          <img src="img/sol.png" alt="SOL" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%239945FF\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+        </div>
+        <div class="token-info">
+          <div class="token-name">SOL</div>
+          <div class="token-price">
+            <span id="solPrice">$126.54</span>
+            <span class="token-change positive">+1.41%</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <div class="token-amount" id="solAmount">0</div>
+          <div class="token-value" id="solValue">$0</div>
+        </div>
+      </div>
+
+      <!-- ETH Token -->
+      <div class="token-item" data-token="ETH">
+        <div class="token-icon">
+          <img src="img/eth.png" alt="ETH" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23627EEA\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+        </div>
+        <div class="token-info">
+          <div class="token-name">ETH</div>
+          <div class="token-price">
+            <span id="ethPrice">$3,452.78</span>
+            <span class="token-change negative">-2.34%</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <div class="token-amount" id="ethAmount">0</div>
+          <div class="token-value" id="ethValue">$0</div>
+        </div>
+      </div>
+
+      <!-- BTC Token -->
+      <div class="token-item" data-token="BTC">
+        <div class="token-icon">
+          <img src="img/btc.png" alt="BTC" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23F7931A\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+        </div>
+        <div class="token-info">
+          <div class="token-name">BTC</div>
+          <div class="token-price">
+            <span id="btcPrice">$65,432.21</span>
+            <span class="token-change positive">+1.23%</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <div class="token-amount" id="btcAmount">0</div>
+          <div class="token-value" id="btcValue">$0</div>
+        </div>
+      </div>
+
+      <!-- POL Token -->
+      <div class="token-item" data-token="POL">
+        <div class="token-icon">
+          <img src="img/pol.png" alt="POL" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%238247E5\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+        </div>
+        <div class="token-info">
+          <div class="token-name">POL</div>
+          <div class="token-price">
+            <span id="polPrice">$0.78</span>
+            <span class="token-change negative">-0.96%</span>
+          </div>
+        </div>
+        <div class="token-balance">
+          <div class="token-amount" id="polAmount">0</div>
+          <div class="token-value" id="polValue">$0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Markets</span>
+      </a>
+      <a href="send.html" class="nav-item">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Trade</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <i class="fas fa-compass"></i>
+        <span>Profile</span>
+      </a>
+      <a href="defi-wallet.html" class="nav-item active">
+        <i class="fas fa-wallet"></i>
+        <span>Assets</span>
+      </a>
+    </nav>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check if user is logged in
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"))
+      const token = localStorage.getItem("token")
+
+      if (!currentUser || !token) {
+        // Redirect to login if not logged in
+        window.location.href = "index.html"
+        return
+      }
+
+      // Apply dark mode if enabled
+      const isDarkMode = localStorage.getItem("darkMode") === "true"
+      if (isDarkMode) {
+        document.body.classList.add("dark-mode")
+      }
+
+      // Load user data and balances
+      loadUserData()
+
+      // Set up polling for balance updates - check every 10 seconds
+      setInterval(() => {
+        refreshBalances()
+      }, 10000)
+
+      // Helper functions
+      function loadUserData() {
+        // Update main balance display
+        const balanceValue = document.getElementById("balanceValue")
+        if (balanceValue) {
+          if (currentUser.balance > 0) {
+            balanceValue.textContent = formatNumber(currentUser.balance)
+          } else {
+            balanceValue.textContent = "<0.00001"
+          }
+        }
+
+        // Update token balances
+        updateTokenBalance("trx", currentUser.trxBalance || 0, 0.066762)
+        updateTokenBalance("usdt", currentUser.usdtBalance || 0, 1.00)
+        updateTokenBalance("usdc", currentUser.usdcBalance || 0, 1.01)
+        updateTokenBalance("bnb", currentUser.bnbBalance || 0, 610.38)
+        updateTokenBalance("sol", currentUser.solBalance || 0, 126.54)
+        updateTokenBalance("eth", currentUser.ethBalance || 0, 3452.78)
+        updateTokenBalance("btc", currentUser.btcBalance || 0, 65432.21)
+        updateTokenBalance("pol", currentUser.polBalance || 0, 0.78)
+      }
+
+      function updateTokenBalance(token, balance, price) {
+        const amountElement = document.getElementById(`${token}Amount`)
+        const valueElement = document.getElementById(`${token}Value`)
+        
+        if (amountElement) {
+          amountElement.textContent = balance > 0 ? balance : "0"
+        }
+        
+        if (valueElement) {
+          const value = balance * price
+          valueElement.textContent = value > 0 ? `$${formatNumber(value)}` : "$0"
+        }
+      }
+
+      // Function to refresh balances from the server
+      function refreshBalances() {
+        fetch("/api/users/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Update the current user data in localStorage
+              const updatedUser = data.user
+
+              // Only update if there are actual changes to avoid unnecessary re-renders
+              if (JSON.stringify(updatedUser) !== JSON.stringify(currentUser)) {
+                localStorage.setItem("currentUser", JSON.stringify(updatedUser))
+
+                // Update the UI with new balance
+                const balanceValue = document.getElementById("balanceValue")
+                if (balanceValue) {
+                  if (updatedUser.balance > 0) {
+                    balanceValue.textContent = formatNumber(updatedUser.balance)
+                  } else {
+                    balanceValue.textContent = "<0.00001"
+                  }
+                }
+
+                // Update token balances
+                updateTokenBalance("trx", updatedUser.trxBalance || 0, 0.066762)
+                updateTokenBalance("usdt", updatedUser.usdtBalance || 0, 1.00)
+                updateTokenBalance("usdc", updatedUser.usdcBalance || 0, 1.01)
+                updateTokenBalance("bnb", updatedUser.bnbBalance || 0, 610.38)
+                updateTokenBalance("sol", updatedUser.solBalance || 0, 126.54)
+                updateTokenBalance("eth", updatedUser.ethBalance || 0, 3452.78)
+                updateTokenBalance("btc", updatedUser.btcBalance || 0, 65432.21)
+                updateTokenBalance("pol", updatedUser.polBalance || 0, 0.78)
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error refreshing balances:", error)
+          })
+      }
+
+      function formatNumber(num) {
+        if (num === undefined || num === null) return "0.00"
+        return Number.parseFloat(num).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      }
+
+      // Token item click handler
+      const tokenItems = document.querySelectorAll(".token-item")
+      tokenItems.forEach((item) => {
+        item.addEventListener("click", function() {
+          const tokenType = this.getAttribute("data-token")
+          showTokenActions(tokenType)
+        })
+      })
+
+      // Add this function to show token actions
+      function showTokenActions(tokenType) {
+        // Create modal for token actions
+        const modal = document.createElement("div")
+        modal.className = "modal active"
+        modal.id = "tokenActionsModal"
+
+        modal.innerHTML = `
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">${tokenType} Actions</h3>
+              <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="token-actions">
+                <a href="send.html?token=${tokenType}" class="token-action-btn">
+                  <div class="token-action-icon">
+                    <i class="fas fa-arrow-up"></i>
+                  </div>
+                  <div class="token-action-label">Send</div>
+                </a>
+                <a href="receive.html?token=${tokenType}" class="token-action-btn">
+                  <div class="token-action-icon">
+                    <i class="fas fa-arrow-down"></i>
+                  </div>
+                  <div class="token-action-label">Receive</div>
+                </a>
+                <a href="#" class="token-action-btn fund-token-btn" data-token="${tokenType}">
+                  <div class="token-action-icon">
+                    <i class="fas fa-wallet"></i>
+                  </div>
+                  <div class="token-action-label">Fund from Main</div>
+                </a>
+                <a href="#" class="token-action-btn">
+                  <div class="token-action-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                  </div>
+                  <div class="token-action-label">Swap</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        `
+
+        document.body.appendChild(modal)
+
+        // Add event listener to close modal
+        const closeBtn = modal.querySelector(".modal-close")
+        closeBtn.addEventListener("click", () => {
+          document.body.removeChild(modal)
+        })
+
+        // Add event listener for fund token button
+        const fundTokenBtn = modal.querySelector(".fund-token-btn")
+        if (fundTokenBtn) {
+          fundTokenBtn.addEventListener("click", (e) => {
+            e.preventDefault()
+            showFundTokenModal(tokenType)
+          })
+        }
+
+        // Close modal when clicking outside
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            document.body.removeChild(modal)
+          }
+        })
+      }
+
+      function showFundTokenModal(tokenType) {
+        // Remove existing token actions modal
+        const existingModal = document.getElementById("tokenActionsModal")
+        if (existingModal) {
+          document.body.removeChild(existingModal)
+        }
+
+        // Create fund token modal
+        const modal = document.createElement("div")
+        modal.className = "modal active"
+        modal.id = "fundTokenModal"
+
+        modal.innerHTML = `
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Fund ${tokenType} Wallet</h3>
+              <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+              <form id="fundTokenForm">
+                <input type="hidden" id="tokenType" value="${tokenType}">
+                <div class="form-group">
+                  <label for="fundAmount" class="form-label">Amount</label>
+                  <input type="number" id="fundAmount" class="form-input" min="0.01" step="0.01" placeholder="0.00" required>
+                </div>
+                
+                <div id="fundTokenError" class="form-error"></div>
+                
+                <button type="submit" class="auth-btn">
+                  <i class="fas fa-wallet"></i> Fund ${tokenType} Wallet
+                </button>
+              </form>
+            </div>
+          </div>
+        `
+
+        document.body.appendChild(modal)
+
+        // Add event listener to close modal
+        const closeBtn = modal.querySelector(".modal-close")
+        closeBtn.addEventListener("click", () => {
+          document.body.removeChild(modal)
+        })
+
+        // Add event listener for fund token form
+        const fundTokenForm = document.getElementById("fundTokenForm")
+        if (fundTokenForm) {
+          fundTokenForm.addEventListener("submit", (e) => {
+            e.preventDefault()
+            const tokenType = document.getElementById("tokenType").value
+            const amount = document.getElementById("fundAmount").value
+            const errorElement = document.getElementById("fundTokenError")
+
+            // Clear previous errors
+            errorElement.textContent = ""
+
+            // Validate amount
+            if (Number.parseFloat(amount) <= 0) {
+              errorElement.textContent = "Amount must be greater than 0"
+              return
+            }
+
+            // Make API request to fund token wallet
+            fetch("/api/transactions/fund-token", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                tokenType,
+                amount: Number.parseFloat(amount),
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.success) {
+                  // Close modal
+                  document.body.removeChild(modal)
+
+                  // Update the UI immediately
+                  const updatedUser = JSON.parse(localStorage.getItem("currentUser"))
+                  updatedUser[`${tokenType.toLowerCase()}Balance`] = (updatedUser[`${tokenType.toLowerCase()}Balance`] || 0) + Number.parseFloat(amount)
+                  localStorage.setItem("currentUser", JSON.stringify(updatedUser))
+
+                  // Update the token balance display
+                  updateTokenBalance(tokenType.toLowerCase(), updatedUser[`${tokenType.toLowerCase()}Balance`], getTokenPrice(tokenType))
+
+                  // Show transaction receipt
+                  showTransactionReceipt({
+                    type: "main-to-token",
+                    amount: Number.parseFloat(amount),
+                    token: tokenType,
+                    from: "Main Wallet",
+                    to: `${tokenType} Wallet`,
+                    date: new Date().toISOString(),
+                    txId: data.transactionId || generateTxId()
+                  })
+                } else {
+                  errorElement.textContent = data.message || "Failed to fund wallet"
+                }
+              })
+              .catch((error) => {
+                errorElement.textContent = "An error occurred. Please try again."
+                console.error("Fund token error:", error)
+              })
+          })
+        }
+
+        // Close modal when clicking outside
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            document.body.removeChild(modal)
+          }
+        })
+      }
+
+      // Function to get token price
+      function getTokenPrice(tokenType) {
+        const prices = {
+          "TRX": 0.066762,
+          "USDT": 1.00,
+          "USDC": 1.01,
+          "BNB": 610.38,
+          "SOL": 126.54,
+          "ETH": 3452.78,
+          "BTC": 65432.21,
+          "POL": 0.78
+        }
+        return prices[tokenType] || 0
+      }
+
+      // Function to generate transaction ID
+      function generateTxId() {
+        return "tx_" + Math.random().toString(36).substring(2, 15)
+      }
+
+      // Function to show transaction receipt
+      function showTransactionReceipt(transaction) {
+        // Create receipt modal
+        const modal = document.createElement("div")
+        modal.className = "modal active"
+        modal.id = "receiptModal"
+
+        const formattedDate = new Date(transaction.date).toLocaleString()
+
+        modal.innerHTML = `
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3 class="modal-title">Transaction Receipt</h3>
+              <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div id="receiptContent">
+                <div style="text-align: center; margin-bottom: 20px;">
+                  <div style="font-size: 48px; color: var(--primary-color);">
+                    <i class="fas fa-exchange-alt"></i>
+                  </div>
+                  <h2 style="margin: 12px 0;">Fund ${transaction.token} Wallet</h2>
+                  <div style="font-size: 24px; font-weight: 700; margin: 16px 0;">${transaction.amount} ${transaction.token}</div>
+                </div>
+                
+                <div style="background-color: var(--card-color); border-radius: var(--border-radius); padding: 16px; margin-bottom: 16px;">
+                  <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                    <div style="color: var(--text-secondary);">Date</div>
+                    <div>${formattedDate}</div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                    <div style="color: var(--text-secondary);">From</div>
+                    <div>${transaction.from}</div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                    <div style="color: var(--text-secondary);">To</div>
+                    <div>${transaction.to}</div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                    <div style="color: var(--text-secondary);">Transaction ID</div>
+                    <div style="word-break: break-all;">${transaction.txId}</div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; padding: 8px 0;">
+                    <div style="color: var(--text-secondary);">Status</div>
+                    <div>Completed</div>
+                  </div>
+                </div>
+                
+                <button id="printReceiptBtn" style="width: 100%; padding: 12px; background-color: var(--card-color); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; font-weight: 600;">
+                  <i class="fas fa-print"></i> Print Receipt
+                </button>
+              </div>
+            </div>
+          </div>
+        `
+
+        document.body.appendChild(modal)
+
+        // Add event listener to close modal
+        const closeBtn = modal.querySelector(".modal-close")
+        closeBtn.addEventListener("click", () => {
+          document.body.removeChild(modal)
+        })
+
+        // Print receipt functionality
+        const printReceiptBtn = document.getElementById("printReceiptBtn")
+        if (printReceiptBtn) {
+          printReceiptBtn.addEventListener("click", () => {
+            const receiptContent = document.getElementById("receiptContent")
+            const printWindow = window.open("", "", "width=600,height=600")
+            printWindow.document.write("<html><head><title>Transaction Receipt</title>")
+            printWindow.document.write(
+              "<style>body { font-family: Arial, sans-serif; padding: 20px; } .receipt-header { text-align: center; margin-bottom: 20px; } .receipt-title { font-size: 18px; font-weight: bold; } .receipt-amount { text-align: center; margin: 20px 0; font-size: 24px; font-weight: bold; } .receipt-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; } .receipt-footer { text-align: center; margin-top: 20px; color: #666; }</style>",
+            )
+            printWindow.document.write("</head><body>")
+            printWindow.document.write(`
+              <div class="receipt-header">
+                <h1 class="receipt-title">Transaction Receipt</h1>
+                <p>Fund ${transaction.token} Wallet</p>
+              </div>
+              <div class="receipt-amount">${transaction.amount} ${transaction.token}</div>
+              <div class="receipt-details">
+                <div class="receipt-row">
+                  <div>Date</div>
+                  <div>${formattedDate}</div>
+                </div>
+                <div class="receipt-row">
+                  <div>From</div>
+                  <div>${transaction.from}</div>
+                </div>
+                <div class="receipt-row">
+                  <div>To</div>
+                  <div>${transaction.to}</div>
+                </div>
+                <div class="receipt-row">
+                  <div>Transaction ID</div>
+                  <div>${transaction.txId}</div>
+                </div>
+                <div class="receipt-row">
+                  <div>Status</div>
+                  <div>Completed</div>
+                </div>
+              </div>
+              <div class="receipt-footer">
+                <p>Thank you for using our service</p>
+              </div>
+            `)
+            printWindow.document.write("</body></html>")
+            printWindow.document.close()
+            printWindow.focus()
+            setTimeout(() => {
+              printWindow.print()
+              printWindow.close()
+            }, 250)
+          })
+        }
+
+        // Close modal when clicking outside
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            document.body.removeChild(modal)
+          }
+        })
+      }
+    })
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Wallet</title>
+  <link rel="stylesheet" href="css/binance-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <button class="menu-btn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="tab-selector">
+        <button class="tab-btn">Exchange</button>
+        <button class="tab-btn active">Wallet</button>
+      </div>
+      <button class="search-btn">
+        <i class="fas fa-search"></i>
+      </button>
+    </header>
+
+    <!-- Wallet Header -->
+    <div class="wallet-header">
+      <div class="wallet-title">
+        <i class="fas fa-wallet wallet-icon"></i>
+        <h2>My Wallet</h2>
+        <i class="fas fa-chevron-down"></i>
+      </div>
+      <button class="copy-btn">
+        <i class="far fa-copy"></i>
+      </button>
+    </div>
+
+    <!-- Balance -->
+    <div class="balance-container">
+      <h1 class="balance-amount" id="balanceAmount">$<span id="balanceValue">0.00</span></h1>
+      <button class="receive-btn" onclick="window.location.href='receive.html'">Receive</button>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <a href="scan.html" class="action-btn">
+        <div class="action-icon">
+          <i class="fas fa-qrcode"></i>
+        </div>
+        <span>Scan</span>
+      </a>
+      <a href="#" class="action-btn">
+        <div class="action-icon">
+          <i class="fas fa-gift"></i>
+        </div>
+        <span>Rewards</span>
+      </a>
+      <a href="transactions.html" class="action-btn">
+        <div class="action-icon">
+          <i class="fas fa-history"></i>
+        </div>
+        <span>History</span>
+      </a>
+      <a href="#" class="action-btn">
+        <div class="action-icon">
+          <i class="fas fa-coins"></i>
+        </div>
+        <span>Earn</span>
+      </a>
+      <a href="#" class="action-btn">
+        <div class="action-icon">
+          <i class="fas fa-ellipsis-h"></i>
+        </div>
+        <span>More</span>
+      </a>
+    </div>
+
+    <!-- Promo Banner -->
+    <div class="promo-banner">
+      <div class="promo-content">
+        <h3>Join 8th Exclusive TGE with StakeStone on PancakeSwap</h3>
+        <button class="explore-btn">Explore Now</button>
+      </div>
+      <div class="promo-image">
+        <img src="img/exclusive.png" alt="Promo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\' viewBox=\'0 0 24 24\' fill=\'%23FFD700\' stroke=\'%23FFD700\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23000\' stroke-width=\'2\'/></svg>'">
+      </div>
+    </div>
+
+    <!-- Token Tabs -->
+    <div class="token-tabs">
+      <button class="token-tab active">Watchlist</button>
+      <button class="token-tab">BSC</button>
+      <button class="token-tab">Alpha</button>
+      <button class="token-tab">Trending</button>
+      <button class="token-tab">Newest</button>
+      <button class="token-tab">Solana</button>
+    </div>
+
+    <!-- Token List Header -->
+    <div class="token-list-header">
+      <div class="token-header-item">
+        <span>Vol</span>
+        <i class="fas fa-sort"></i>
+        /
+        <span>Market Cap</span>
+        <i class="fas fa-sort"></i>
+      </div>
+      <div class="token-header-item">
+        <span>Last Price</span>
+        <i class="fas fa-sort"></i>
+        /
+        <span>24h Change</span>
+        <i class="fas fa-sort"></i>
+      </div>
+    </div>
+
+    <!-- Token List -->
+    <div class="token-list" id="tokenList">
+      <!-- TRX Token -->
+      <div class="token-item" data-token="TRX">
+        <div class="token-info">
+          <div class="token-icon">
+            <img src="img/sto.png" alt="TRX" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23FF0000\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+          </div>
+          <div class="token-details">
+            <h3>STO</h3>
+            <div class="token-market">
+              <span class="market-cap">$9.81M</span>
+              <span class="volume">$15.04M</span>
+            </div>
+          </div>
+        </div>
+        <div class="token-price">
+          <div class="price-value">$0.066762</div>
+          <div class="price-change negative">-9.98%</div>
+        </div>
+      </div>
+
+      <!-- USDT Token -->
+      <div class="token-item" data-token="USDT">
+        <div class="token-info">
+          <div class="token-icon">
+            <img src="img/pump.png" alt="USDT" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%2326A17B\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+          </div>
+          <div class="token-details">
+            <h3>PUMP</h3>
+            <div class="token-market">
+              <span class="market-cap">$1.85M</span>
+              <span class="volume">$11.72M</span>
+            </div>
+          </div>
+        </div>
+        <div class="token-price">
+          <div class="price-value">$1.00</div>
+          <div class="price-change neutral">0.00%</div>
+        </div>
+      </div>
+
+      <!-- USDC Token -->
+      <div class="token-item" data-token="USDC">
+        <div class="token-info">
+          <div class="token-icon">
+            <img src="img/yt.png" alt="USDC" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%232775CA\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+          </div>
+          <div class="token-details">
+            <h3>Youtube</h3>
+            <div class="token-market">
+              <span class="market-cap">$24.72M</span>
+              <span class="volume">$4.65M</span>
+            </div>
+          </div>
+        </div>
+        <div class="token-price">
+          <div class="price-value">$1.01</div>
+          <div class="price-change positive">+0.01%</div>
+        </div>
+      </div>
+
+      <!-- BNB Token -->
+      <div class="token-item" data-token="BNB">
+        <div class="token-info">
+          <div class="token-icon">
+            <img src="img/dd.png" alt="BNB" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23F3BA2F\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+          </div>
+          <div class="token-details">
+            <h3>DonkeyDrama</h3>
+            <div class="token-market">
+              <span class="market-cap">$5.74M</span>
+              <span class="volume">$360.1K</span>
+            </div>
+          </div>
+        </div>
+        <div class="token-price">
+          <div class="price-value">$610.38</div>
+          <div class="price-change positive">+0.73%</div>
+        </div>
+      </div>
+
+      <!-- SOL Token -->
+      <div class="token-item" data-token="SOL">
+        <div class="token-info">
+          <div class="token-icon">
+            <img src="img/yellow.png" alt="SOL" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%239945FF\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+          </div>
+          <div class="token-details">
+            <h3>YELLOW</h3>
+            <div class="token-market">
+              <span class="market-cap">$351.93K</span>
+              <span class="volume">$213.51K</span>
+            </div>
+          </div>
+        </div>
+        <div class="token-price">
+          <div class="price-value">$126.54</div>
+          <div class="price-change positive">+1.41%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earn Section -->
+    <div class="earn-section">
+      <div class="section-header">
+        <h2 class="section-title">Earn</h2>
+        <i class="fas fa-chevron-right section-more"></i>
+      </div>
+      
+      <div class="earn-cards">
+        <!-- BNB Card -->
+        <div class="earn-card">
+          <div class="earn-token">
+            <div class="earn-token-icon">
+              <img src="img/bnb.png" alt="BNB" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'%23F3BA2F\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+            </div>
+            <div class="earn-token-name">BNB</div>
+          </div>
+          <div class="earn-apy">29.89% APY</div>
+        </div>
+        
+        <!-- ETH Card -->
+        <div class="earn-card">
+          <div class="earn-token">
+            <div class="earn-token-icon">
+              <img src="img/eth.png" alt="ETH" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'%23627EEA\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+            </div>
+            <div class="earn-token-name">ETH</div>
+          </div>
+          <div class="earn-apy">3.89% APY</div>
+        </div>
+        
+        <!-- BTCB Card -->
+        <div class="earn-card">
+          <div class="earn-token">
+            <div class="earn-token-icon">
+              <img src="img/btc.png" alt="BTCB" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'%23F7931A\' stroke=\'%23FFFFFF\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M8 12h8M12 8v8\' stroke=\'%23FFFFFF\' stroke-width=\'0\'/></svg>'">
+            </div>
+            <div class="earn-token-name">BTCB</div>
+          </div>
+          <div class="earn-apy">0.03% APY</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DApps Section -->
+    <div class="dapps-section">
+      <div class="section-header">
+        <h2 class="section-title">DApps</h2>
+        <i class="fas fa-chevron-right section-more"></i>
+      </div>
+      
+      <div class="dapps-tabs">
+        <button class="dapps-tab">Favorites</button>
+        <button class="dapps-tab active">Hot</button>
+        <button class="dapps-tab">Recent</button>
+      </div>
+      
+      <div class="dapps-grid">
+        <!-- Stakestone TGE -->
+        <div class="dapp-item">
+          <div class="dapp-icon">
+            <img src="img/sto.png" alt="Stakestone" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' viewBox=\'0 0 24 24\' fill=\'%23FFFFFF\' stroke=\'%23000000\' stroke-width=\'1\'><polygon points=\'12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2\'/></svg>'">
+          </div>
+          <div class="dapp-info">
+            <div class="dapp-name">Stakestone TGE</div>
+            <div class="dapp-description">Ethereum staking service provider.</div>
+          </div>
+        </div>
+        
+        <!-- Aster -->
+        <div class="dapp-item">
+          <div class="dapp-icon">
+            <img src="img/ball.png" alt="Aster" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' viewBox=\'0 0 24 24\' fill=\'%23FFFFFF\' stroke=\'%23000000\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M12 2v20M2 12h20\' stroke=\'%23000000\' stroke-width=\'1\'/></svg>'">
+          </div>
+          <div class="dapp-info">
+            <div class="dapp-name">Aster</div>
+            <div class="dapp-description">Astherus is a metaverse...</div>
+          </div>
+        </div>
+        
+        <!-- GMGN.ai -->
+        <div class="dapp-item">
+          <div class="dapp-icon">
+            <img src="img/toy.png" alt="GMGN.ai" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' viewBox=\'0 0 24 24\' fill=\'%2300FF00\' stroke=\'%23000000\' stroke-width=\'1\'><rect x=\'2\' y=\'2\' width=\'20\' height=\'20\' rx=\'2\' ry=\'2\'/></svg>'">
+          </div>
+          <div class="dapp-info">
+            <div class="dapp-name">GMGN.ai</div>
+            <div class="dapp-description">GMGN.ai automates content creation...</div>
+          </div>
+        </div>
+        
+        <!-- Four.meme -->
+        <div class="dapp-item">
+          <div class="dapp-icon">
+            <img src="img/hand.png" alt="Four.meme" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' viewBox=\'0 0 24 24\' fill=\'%2300FFFF\' stroke=\'%23000000\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M12 2v20M2 12h20\' stroke=\'%23000000\' stroke-width=\'1\'/></svg>'">
+          </div>
+          <div class="dapp-info">
+            <div class="dapp-name">Four.meme</div>
+            <div class="dapp-description">The premier meme...</div>
+          </div>
+        </div>
+
+        <!-- Solayer checker -->
+        <div class="dapp-item">
+          <div class="dapp-icon">
+            <img src="img/sss.png" alt="Solayer" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' viewBox=\'0 0 24 24\' fill=\'%2300AA00\' stroke=\'%23000000\' stroke-width=\'1\'><rect x=\'2\' y=\'2\' width=\'20\' height=\'20\' rx=\'2\' ry=\'2\'/></svg>'">
+          </div>
+          <div class="dapp-info">
+            <div class="dapp-name">Solayer checker</div>
+            <div class="dapp-description">Solayer is the dominant restaking...</div>
+          </div>
+        </div>
+        
+        <!-- PancakeSwap -->
+        <div class="dapp-item">
+          <div class="dapp-icon">
+            <img src="img/pan.png" alt="PancakeSwap" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'48\' viewBox=\'0 0 24 24\' fill=\'%23D8A032\' stroke=\'%23000000\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><path d=\'M12 2v20M2 12h20\' stroke=\'%23000000\' stroke-width=\'1\'/></svg>'">
+          </div>
+          <div class="dapp-info">
+            <div class="dapp-name">PancakeSwap</div>
+            <div class="dapp-description">Decentralized exchange...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Web3 Section -->
+    <div class="about-web3">
+      <div class="section-header">
+        <h2 class="section-title">About Web3</h2>
+      </div>
+      
+      <div class="web3-articles">
+        <!-- Article 1 -->
+        <div class="web3-article">
+          <div class="article-image">
+            <img src="img/key.png" alt="Wallet Article" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 24 24\' fill=\'%23F0B90B\' stroke=\'%23000000\' stroke-width=\'1\'><circle cx=\'12\' cy=\'12\' r=\'8\'/><line x1=\'12\' y1=\'4\' x2=\'12\' y2=\'20\' stroke=\'%23000000\' stroke-width=\'2\'/><line x1=\'4\' y1=\'12\' x2=\'20\' y2=\'12\' stroke=\'%23000000\' stroke-width=\'2\'/></svg>'">
+          </div>
+          <h3 class="article-title">What Is Binance Wallet and How Does It Work?</h3>
+        </div>
+        
+        <!-- Article 2 -->
+        <div class="web3-article">
+          <div class="article-image">
+            <img src="img/crypto-article.png" alt="Crypto Article" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 24 24\' fill=\'%23F0B90B\' stroke=\'%23000000\' stroke-width=\'1\'><rect x=\'2\' y=\'4\' width=\'20\' height=\'16\' rx=\'2\' ry=\'2\'/><line x1=\'12\' y1=\'4\' x2=\'12\' y2=\'20\' stroke=\'%23000000\' stroke-width=\'2\'/></svg>'">
+          </div>
+          <h3 class="article-title">What Is Binance and How to Get Started?</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-item active">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Markets</span>
+      </a>
+      <a href="send.html" class="nav-item">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Trade</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+      <a href="defi-wallet.html" class="nav-item">
+        <i class="fas fa-wallet"></i>
+        <span>Assets</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
+

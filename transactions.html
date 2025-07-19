@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Wallet - Transactions</title>
+  <link rel="stylesheet" href="css/binance-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <a href="dashboard.html" class="menu-btn">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <h2>Transactions</h2>
+      <div style="width: 40px;"></div>
+    </header>
+
+    <!-- Transactions Filter -->
+    <div class="transactions-filter">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="sent">Sent</button>
+      <button class="filter-tab" data-filter="received">Received</button>
+      <button class="filter-tab" data-filter="deposit">Deposits</button>
+      <button class="filter-tab" data-filter="withdrawal">Withdrawals</button>
+    </div>
+
+    <!-- Transaction List -->
+    <div class="transaction-list" id="transactionsList">
+      <!-- Transaction items will be loaded here -->
+      <div class="transaction-item">
+        <div class="transaction-icon received">
+          <i class="fas fa-arrow-down"></i>
+        </div>
+        <div class="transaction-info">
+          <div class="transaction-title">Received TRX</div>
+          <div class="transaction-date">24 Dec 2024</div>
+        </div>
+        <div class="transaction-amount">
+          <div class="transaction-value received">+$10.00</div>
+          <div class="transaction-status">Completed</div>
+        </div>
+      </div>
+
+      <div class="transaction-item">
+        <div class="transaction-icon received">
+          <i class="fas fa-arrow-down"></i>
+        </div>
+        <div class="transaction-info">
+          <div class="transaction-title">Received USDT</div>
+          <div class="transaction-date">24 Dec 2024</div>
+        </div>
+        <div class="transaction-amount">
+          <div class="transaction-value received">+$1000.00</div>
+          <div class="transaction-status">Completed</div>
+        </div>
+      </div>
+
+      <div class="transaction-item">
+        <div class="transaction-icon sent">
+          <i class="fas fa-arrow-up"></i>
+        </div>
+        <div class="transaction-info">
+          <div class="transaction-title">Sent USDC</div>
+          <div class="transaction-date">23 Dec 2024</div>
+        </div>
+        <div class="transaction-amount">
+          <div class="transaction-value sent">-$500.00</div>
+          <div class="transaction-status">Completed</div>
+        </div>
+      </div>
+
+      <div class="transaction-item">
+        <div class="transaction-icon received">
+          <i class="fas fa-arrow-down"></i>
+        </div>
+        <div class="transaction-info">
+          <div class="transaction-title">Received BNB</div>
+          <div class="transaction-date">22 Dec 2024</div>
+        </div>
+        <div class="transaction-amount">
+          <div class="transaction-value received">+$250.00</div>
+          <div class="transaction-status">Completed</div>
+        </div>
+      </div>
+
+      <div class="transaction-item">
+        <div class="transaction-icon sent">
+          <i class="fas fa-arrow-up"></i>
+        </div>
+        <div class="transaction-info">
+          <div class="transaction-title">Sent SOL</div>
+          <div class="transaction-date">21 Dec 2024</div>
+        </div>
+        <div class="transaction-amount">
+          <div class="transaction-value sent">-$75.00</div>
+          <div class="transaction-status">Completed</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaction Receipt Modal -->
+    <div class="modal" id="receiptModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">Transaction Receipt</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="receiptContent">
+            <!-- Receipt content will be loaded here -->
+          </div>
+          <button id="printReceiptBtn" class="auth-btn mt-16">
+            <i class="fas fa-print"></i> Print Receipt
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-item">
+        <i class="fas fa-home"></i>
+        <span>Home</span>
+      </a>
+      <a href="#" class="nav-item">
+        <i class="fas fa-chart-line"></i>
+        <span>Markets</span>
+      </a>
+      <a href="send.html" class="nav-item">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Trade</span>
+      </a>
+      <a href="profile.html" class="nav-item active">
+        <i class="fas fa-user"></i>
+        <span>Profile</span>
+      </a>
+      <a href="defi-wallet.html" class="nav-item">
+        <i class="fas fa-wallet"></i>
+        <span>Assets</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="js/transactions.js"></script>
+</body>
+</html>
+
