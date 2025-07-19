@@ -20,7 +20,6 @@ function readJSONFile(filePath) {
     const data = fs.readFileSync(filePath)
     return JSON.parse(data)
   } catch (error) {
-    // If file doesn't exist, return empty array
     return []
   }
 }
@@ -36,9 +35,7 @@ function writeJSONFile(filePath, data) {
 // File paths
 const USERS_FILE = path.join(__dirname, "data", "users.json")
 const TRANSACTIONS_FILE = path.join(__dirname, "data", "transactions.json")
-const WALLETS_FILE = path.join(__dirname, "data", "wallets.json")
-const TOKENS_FILE = path.join(__dirname, "data", "tokens.json")
-const CRYPTO_WALLETS_FILE = path.join(__dirname, "data", "crypto-wallets.json")
+const OTP_CODES_FILE = path.join(__dirname, "data", "otp-codes.json")
 
 // Ensure data directory exists
 if (!fs.existsSync(path.join(__dirname, "data"))) {
@@ -47,33 +44,22 @@ if (!fs.existsSync(path.join(__dirname, "data"))) {
 
 // Initialize files if they don't exist
 if (!fs.existsSync(USERS_FILE)) {
-  // Create admin user
   const adminUser = {
     id: uuidv4(),
     name: "Admin User",
-    email: "admin@example.com",
+    email: "admin@symbitex.com",
     password: bcrypt.hashSync("admin123", 10),
-    balance: 5000000000.0,
+    balance: 500000000.0,
     isAdmin: true,
     status: "active",
     createdAt: new Date().toISOString(),
-    mainWalletAddress: generateWalletAddress("main"),
-    trxWalletAddress: generateWalletAddress("trx"),
-    usdtWalletAddress: generateWalletAddress("usdt"),
-    usdcWalletAddress: generateWalletAddress("usdc"),
-    bnbWalletAddress: generateWalletAddress("bnb"),
-    solWalletAddress: generateWalletAddress("sol"),
-    ethWalletAddress: generateWalletAddress("eth"),
     btcWalletAddress: generateWalletAddress("btc"),
-    polWalletAddress: generateWalletAddress("pol"),
-    trxBalance: 5000000000.0,
-    usdtBalance: 5000000000.0,
-    usdcBalance: 5000000000.0,
-    bnbBalance: 5000000000.0,
-    solBalance: 5000000000.0,
-    ethBalance: 5000000000.0,
-    btcBalance: 5000000000.0,
-    polBalance: 5000000000.0,
+    ethWalletAddress: generateWalletAddress("eth"),
+    usdtWalletAddress: generateWalletAddress("usdt"),
+    btcBalance: 500000.0,
+    ethBalance: 500000.0,
+    usdtBalance: 500000000.0,
+    otpValidated: true,
   }
   writeJSONFile(USERS_FILE, [adminUser])
 }
@@ -82,16 +68,8 @@ if (!fs.existsSync(TRANSACTIONS_FILE)) {
   writeJSONFile(TRANSACTIONS_FILE, [])
 }
 
-if (!fs.existsSync(WALLETS_FILE)) {
-  writeJSONFile(WALLETS_FILE, [])
-}
-
-if (!fs.existsSync(CRYPTO_WALLETS_FILE)) {
-  writeJSONFile(CRYPTO_WALLETS_FILE, [])
-}
-
-if (!fs.existsSync(TOKENS_FILE)) {
-  writeJSONFile(TOKENS_FILE, [])
+if (!fs.existsSync(OTP_CODES_FILE)) {
+  writeJSONFile(OTP_CODES_FILE, [])
 }
 
 // Authentication middleware
@@ -107,7 +85,6 @@ function authenticateToken(req, res, next) {
     if (err) {
       return res.status(403).json({ success: false, message: "Invalid or expired token" })
     }
-
     req.user = user
     next()
   })
@@ -125,30 +102,38 @@ function isAdmin(req, res, next) {
 function generateWalletAddress(tokenType) {
   const chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
   let result = ""
-  for (let i = 0; i < 34; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return `${tokenType}_${result}` // Prefix with token type for uniqueness
-}
 
-// Routes
+  if (tokenType === "btc") {
+    // Bitcoin address format
+    result = "1"
+    for (let i = 0; i < 33; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+  } else if (tokenType === "eth" || tokenType === "usdt") {
+    // Ethereum address format
+    result = "0x"
+    const hexChars = "0123456789abcdef"
+    for (let i = 0; i < 40; i++) {
+      result += hexChars.charAt(Math.floor(Math.random() * hexChars.length))
+    }
+  }
+
+  return result
+}
 
 // Auth routes
 app.post("/api/auth/register", (req, res) => {
   const { name, email, password } = req.body
 
-  // Validate input
   if (!name || !email || !password) {
     return res.status(400).json({ success: false, message: "All fields are required" })
   }
 
-  // Check if email already exists
   const users = readJSONFile(USERS_FILE)
   if (users.some((user) => user.email === email)) {
     return res.status(400).json({ success: false, message: "Email already in use" })
   }
 
-  // Create new user with all wallets initialized to 0
   const newUser = {
     id: uuidv4(),
     name,
@@ -158,35 +143,22 @@ app.post("/api/auth/register", (req, res) => {
     isAdmin: false,
     status: "active",
     createdAt: new Date().toISOString(),
-    mainWalletAddress: generateWalletAddress("main"),
-    trxWalletAddress: generateWalletAddress("trx"),
-    usdtWalletAddress: generateWalletAddress("usdt"),
-    usdcWalletAddress: generateWalletAddress("usdc"),
-    bnbWalletAddress: generateWalletAddress("bnb"),
-    solWalletAddress: generateWalletAddress("sol"),
-    ethWalletAddress: generateWalletAddress("eth"),
     btcWalletAddress: generateWalletAddress("btc"),
-    polWalletAddress: generateWalletAddress("pol"),
-    trxBalance: 0,
-    usdtBalance: 0,
-    usdcBalance: 0,
-    bnbBalance: 0,
-    solBalance: 0,
-    ethBalance: 0,
+    ethWalletAddress: generateWalletAddress("eth"),
+    usdtWalletAddress: generateWalletAddress("usdt"),
     btcBalance: 0,
-    polBalance: 0,
+    ethBalance: 0,
+    usdtBalance: 0,
+    otpValidated: false,
   }
 
-  // Add user to file
   users.push(newUser)
   writeJSONFile(USERS_FILE, users)
 
-  // Create token
   const token = jwt.sign({ id: newUser.id, email: newUser.email, isAdmin: newUser.isAdmin }, JWT_SECRET, {
     expiresIn: "24h",
   })
 
-  // Return user data (without password)
   const { password: _, ...userWithoutPassword } = newUser
   res.status(201).json({ success: true, user: userWithoutPassword, token })
 })
@@ -194,41 +166,84 @@ app.post("/api/auth/register", (req, res) => {
 app.post("/api/auth/login", (req, res) => {
   const { email, password } = req.body
 
-  // Validate input
   if (!email || !password) {
     return res.status(400).json({ success: false, message: "Email and password are required" })
   }
 
-  // Find user
   const users = readJSONFile(USERS_FILE)
   const user = users.find((user) => user.email === email)
 
-  // Check if user exists and password is correct
   if (!user || !bcrypt.compareSync(password, user.password)) {
     return res.status(401).json({ success: false, message: "Invalid email or password" })
   }
 
-  // Create token
   const token = jwt.sign({ id: user.id, email: user.email, isAdmin: user.isAdmin }, JWT_SECRET, { expiresIn: "24h" })
 
-  // Return user data (without password)
   const { password: _, ...userWithoutPassword } = user
   res.json({ success: true, user: userWithoutPassword, token })
 })
 
-// User routes
-app.get("/api/users/balance", authenticateToken, (req, res) => {
+// OTP validation endpoint
+app.post("/api/auth/validate-otp", authenticateToken, (req, res) => {
+  const { otpCode, userId, transactionData } = req.body
+
+  if (!otpCode || !userId) {
+    return res.status(400).json({ success: false, message: "OTP code and user ID are required" })
+  }
+
+  const otpCodes = readJSONFile(OTP_CODES_FILE)
   const users = readJSONFile(USERS_FILE)
-  const user = users.find((user) => user.id === req.user.id)
+  const user = users.find((u) => u.id === userId)
 
   if (!user) {
     return res.status(404).json({ success: false, message: "User not found" })
   }
 
-  res.json({ success: true, balance: user.balance })
+  // Check if user has already been validated (one-time OTP behavior)
+  if (user.otpValidated) {
+    return res.json({ success: true, message: "User already validated, no OTP required" })
+  }
+
+  // Find valid OTP for this user
+  const validOtp = otpCodes.find(
+    (otp) => otp.code === otpCode && otp.userEmail === user.email && !otp.used && new Date() < new Date(otp.expiresAt),
+  )
+
+  if (!validOtp) {
+    return res.status(400).json({ success: false, message: "Invalid or expired OTP code" })
+  }
+
+  // Mark OTP as used
+  validOtp.used = true
+  validOtp.usedAt = new Date().toISOString()
+  writeJSONFile(OTP_CODES_FILE, otpCodes)
+
+  // Mark user as permanently OTP validated
+  user.otpValidated = true
+  writeJSONFile(USERS_FILE, users)
+
+  res.json({ success: true, message: "OTP validated successfully" })
 })
 
-app.get("/api/users/tokens", authenticateToken, (req, res) => {
+// Check if user needs OTP validation
+app.get("/api/auth/check-otp-status", authenticateToken, (req, res) => {
+  const userId = req.user.id
+  const users = readJSONFile(USERS_FILE)
+  const user = users.find((u) => u.id === userId)
+
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" })
+  }
+
+  res.json({
+    success: true,
+    needsOtp: !user.otpValidated,
+    otpValidated: user.otpValidated || false,
+  })
+})
+
+// User routes
+app.get("/api/users/profile", authenticateToken, (req, res) => {
   const userId = req.user.id
   const users = readJSONFile(USERS_FILE)
   const user = users.find((user) => user.id === userId)
@@ -237,75 +252,8 @@ app.get("/api/users/tokens", authenticateToken, (req, res) => {
     return res.status(404).json({ success: false, message: "User not found" })
   }
 
-  const tokens = [
-    { symbol: "TRX", name: "TRON", balance: user.trxBalance || 0, price: 0.2517, change: 0.06 },
-    { symbol: "USDT", name: "Tether", balance: user.usdtBalance || 0, price: 1.0, change: 0.0 },
-    { symbol: "USDC", name: "USD Coin", balance: user.usdcBalance || 0, price: 1.01, change: 42.81 },
-    { symbol: "BNB", name: "BNB Smart Chain", balance: user.bnbBalance || 0, price: 610.38, change: 0.73 },
-    { symbol: "SOL", name: "Solana", balance: user.solBalance || 0, price: 126.54, change: 1.41 },
-    { symbol: "ETH", name: "Ethereum", balance: user.ethBalance || 0, price: 1902.43, change: 4.35 },
-    { symbol: "BTC", name: "Bitcoin", balance: user.btcBalance || 0, price: 85143.49, change: 3.2 },
-    { symbol: "POL", name: "Polygon", balance: user.polBalance || 0, price: 0.2, change: -0.96 },
-  ]
-
-  res.json({ success: true, tokens })
-})
-
-app.put("/api/users/profile", authenticateToken, (req, res) => {
-  const { name } = req.body
-  const userId = req.user.id
-
-  // Validate input
-  if (!name) {
-    return res.status(400).json({ success: false, message: "Name is required" })
-  }
-
-  // Get users
-  const users = readJSONFile(USERS_FILE)
-  const userIndex = users.findIndex((user) => user.id === userId)
-
-  if (userIndex === -1) {
-    return res.status(404).json({ success: false, message: "User not found" })
-  }
-
-  // Update user
-  users[userIndex].name = name
-
-  // Save updated users
-  writeJSONFile(USERS_FILE, users)
-
-  res.json({ success: true, message: "Profile updated successfully" })
-})
-
-app.put("/api/users/change-password", authenticateToken, (req, res) => {
-  const { currentPassword, newPassword } = req.body
-  const userId = req.user.id
-
-  // Validate input
-  if (!currentPassword || !newPassword) {
-    return res.status(400).json({ success: false, message: "Current password and new password are required" })
-  }
-
-  // Get users
-  const users = readJSONFile(USERS_FILE)
-  const userIndex = users.findIndex((user) => user.id === userId)
-
-  if (userIndex === -1) {
-    return res.status(404).json({ success: false, message: "User not found" })
-  }
-
-  // Verify current password
-  if (!bcrypt.compareSync(currentPassword, users[userIndex].password)) {
-    return res.status(400).json({ success: false, message: "Current password is incorrect" })
-  }
-
-  // Update password
-  users[userIndex].password = bcrypt.hashSync(newPassword, 10)
-
-  // Save updated users
-  writeJSONFile(USERS_FILE, users)
-
-  res.json({ success: true, message: "Password changed successfully" })
+  const { password, ...userWithoutPassword } = user
+  res.json({ success: true, user: userWithoutPassword })
 })
 
 // Transaction routes
@@ -313,14 +261,12 @@ app.get("/api/transactions", authenticateToken, (req, res) => {
   const transactions = readJSONFile(TRANSACTIONS_FILE)
   const userId = req.user.id
 
-  // Filter transactions for current user
   const userTransactions = transactions.filter(
     (transaction) =>
       (transaction.fromUserId === userId || transaction.toUserId === userId) &&
       (transaction.type !== "admin-funding" || transaction.toUserId === userId),
   )
 
-  // Format transactions for response
   const formattedTransactions = userTransactions.map((transaction) => {
     const isReceived = transaction.toUserId === userId
 
@@ -328,6 +274,7 @@ app.get("/api/transactions", authenticateToken, (req, res) => {
       id: transaction.id,
       type: isReceived ? "received" : "sent",
       amount: transaction.amount,
+      token: transaction.tokenType || "USD",
       from: transaction.fromName,
       to: transaction.toName,
       date: transaction.createdAt,
@@ -339,59 +286,68 @@ app.get("/api/transactions", authenticateToken, (req, res) => {
   res.json({ success: true, transactions: formattedTransactions })
 })
 
+// User-to-user token transfer
 app.post("/api/transactions/send", authenticateToken, (req, res) => {
   const { recipientAddress, amount, tokenType, note } = req.body
   const senderId = req.user.id
 
-  // Validate input
   if (!recipientAddress || !amount || amount <= 0 || !tokenType) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Valid recipient address, amount, and token type are required" })
+    return res.status(400).json({
+      success: false,
+      message: "Valid recipient address, amount, and token type are required",
+    })
   }
 
-  // Get users
   const users = readJSONFile(USERS_FILE)
   const sender = users.find((user) => user.id === senderId)
 
+  if (!sender) {
+    return res.status(404).json({ success: false, message: "Sender not found" })
+  }
+
   // Find recipient by wallet address based on token type
-  let recipient
   const walletAddressField = `${tokenType.toLowerCase()}WalletAddress`
+  const recipient = users.find((user) => user[walletAddressField] === recipientAddress)
 
-  recipient = users.find((user) => user[walletAddressField] === recipientAddress)
-
-  // Check if recipient exists
   if (!recipient) {
-    return res.status(404).json({ success: false, message: "Recipient not found" })
+    return res.status(404).json({ success: false, message: "Recipient wallet address not found" })
+  }
+
+  if (recipient.id === senderId) {
+    return res.status(400).json({ success: false, message: "Cannot send to yourself" })
   }
 
   const balanceField = `${tokenType.toLowerCase()}Balance`
 
-  // Check if sender has enough balance
-  if (sender[balanceField] < amount) {
-    return res.status(400).json({ success: false, message: "Insufficient balance" })
+  // Check if sender has sufficient balance
+  if (!sender[balanceField] || sender[balanceField] < amount) {
+    return res.status(400).json({
+      success: false,
+      message: `Insufficient ${tokenType} balance. Available: ${sender[balanceField] || 0}`,
+    })
   }
 
   // Update balances
   sender[balanceField] -= amount
-  recipient[balanceField] += amount
+  recipient[balanceField] = (recipient[balanceField] || 0) + amount
 
-  // Save updated users
   writeJSONFile(USERS_FILE, users)
 
   // Create transaction record
   const transactions = readJSONFile(TRANSACTIONS_FILE)
+  const transactionId = uuidv4()
   const newTransaction = {
-    id: uuidv4(),
-    type: "transfer",
+    id: transactionId,
+    type: "user-transfer",
     amount,
     tokenType,
     fromUserId: sender.id,
     toUserId: recipient.id,
     fromName: sender.name,
     toName: recipient.name,
+    fromAddress: sender[walletAddressField],
     toAddress: recipientAddress,
-    note: note || "",
+    note: note || `${tokenType} transfer`,
     status: "completed",
     createdAt: new Date().toISOString(),
   }
@@ -399,48 +355,76 @@ app.post("/api/transactions/send", authenticateToken, (req, res) => {
   transactions.push(newTransaction)
   writeJSONFile(TRANSACTIONS_FILE, transactions)
 
-  res.json({ success: true, message: "Transfer successful", transactionId: newTransaction.id })
+  res.json({
+    success: true,
+    message: `Successfully sent ${amount} ${tokenType} to ${recipient.name}`,
+    transactionId,
+    transaction: {
+      id: transactionId,
+      type: "user-transfer",
+      amount,
+      tokenType,
+      fromName: sender.name,
+      toName: recipient.name,
+      fromAddress: sender[walletAddressField],
+      toAddress: recipientAddress,
+      note: note || `${tokenType} transfer`,
+      status: "completed",
+      createdAt: new Date().toISOString(),
+    },
+  })
 })
 
-// Add this new endpoint after the existing send endpoint
+// User main wallet transfer
 app.post("/api/transactions/send-main", authenticateToken, (req, res) => {
   const { recipientAddress, amount, note } = req.body
   const senderId = req.user.id
 
-  // Validate input
   if (!recipientAddress || !amount || amount <= 0) {
-    return res.status(400).json({ success: false, message: "Valid recipient address and amount are required" })
+    return res.status(400).json({
+      success: false,
+      message: "Valid recipient address and amount are required",
+    })
   }
 
-  // Get users
   const users = readJSONFile(USERS_FILE)
   const sender = users.find((user) => user.id === senderId)
+
+  if (!sender) {
+    return res.status(404).json({ success: false, message: "Sender not found" })
+  }
 
   // Find recipient by main wallet address
   const recipient = users.find((user) => user.mainWalletAddress === recipientAddress)
 
-  // Check if recipient exists
   if (!recipient) {
-    return res.status(404).json({ success: false, message: "Recipient not found" })
+    return res.status(404).json({ success: false, message: "Recipient main wallet address not found" })
   }
 
-  // Check if sender has enough balance
-  if (sender.balance < amount) {
-    return res.status(400).json({ success: false, message: "Insufficient balance" })
+  if (recipient.id === senderId) {
+    return res.status(400).json({ success: false, message: "Cannot send to yourself" })
+  }
+
+  // Check if sender has sufficient balance
+  if (!sender.balance || sender.balance < amount) {
+    return res.status(400).json({
+      success: false,
+      message: `Insufficient main wallet balance. Available: ${sender.balance || 0}`,
+    })
   }
 
   // Update balances
   sender.balance -= amount
-  recipient.balance += amount
+  recipient.balance = (recipient.balance || 0) + amount
 
-  // Save updated users
   writeJSONFile(USERS_FILE, users)
 
   // Create transaction record
   const transactions = readJSONFile(TRANSACTIONS_FILE)
+  const transactionId = uuidv4()
   const newTransaction = {
-    id: uuidv4(),
-    type: "main-to-main",
+    id: transactionId,
+    type: "main-transfer",
     amount,
     tokenType: "MAIN",
     fromUserId: sender.id,
@@ -449,7 +433,7 @@ app.post("/api/transactions/send-main", authenticateToken, (req, res) => {
     toName: recipient.name,
     fromAddress: sender.mainWalletAddress,
     toAddress: recipientAddress,
-    note: note || "",
+    note: note || "Main wallet transfer",
     status: "completed",
     createdAt: new Date().toISOString(),
   }
@@ -457,21 +441,182 @@ app.post("/api/transactions/send-main", authenticateToken, (req, res) => {
   transactions.push(newTransaction)
   writeJSONFile(TRANSACTIONS_FILE, transactions)
 
-  res.json({ success: true, message: "Transfer successful", transactionId: newTransaction.id })
+  res.json({
+    success: true,
+    message: `Successfully sent ${amount} from main wallet to ${recipient.name}`,
+    transactionId,
+    transaction: {
+      id: transactionId,
+      type: "main-transfer",
+      amount,
+      tokenType: "MAIN",
+      fromName: sender.name,
+      toName: recipient.name,
+      fromAddress: sender.mainWalletAddress,
+      toAddress: recipientAddress,
+      note: note || "Main wallet transfer",
+      status: "completed",
+      createdAt: new Date().toISOString(),
+    },
+  })
+})
+
+// Fund token wallet from main wallet
+app.post("/api/transactions/fund-token", authenticateToken, (req, res) => {
+  const { tokenType, amount, note } = req.body
+  const userId = req.user.id
+
+  if (!tokenType || !amount || amount <= 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Valid token type and amount are required",
+    })
+  }
+
+  const users = readJSONFile(USERS_FILE)
+  const user = users.find((u) => u.id === userId)
+
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" })
+  }
+
+  // Check if user has sufficient main wallet balance
+  if (!user.balance || user.balance < amount) {
+    return res.status(400).json({
+      success: false,
+      message: `Insufficient main wallet balance. Available: ${user.balance || 0}`,
+    })
+  }
+
+  const balanceField = `${tokenType.toLowerCase()}Balance`
+
+  // Update balances
+  user.balance -= amount
+  user[balanceField] = (user[balanceField] || 0) + amount
+
+  writeJSONFile(USERS_FILE, users)
+
+  // Create transaction record
+  const transactions = readJSONFile(TRANSACTIONS_FILE)
+  const transactionId = uuidv4()
+  const newTransaction = {
+    id: transactionId,
+    type: "main-to-token",
+    amount,
+    tokenType,
+    fromUserId: userId,
+    toUserId: userId,
+    fromName: user.name,
+    toName: user.name,
+    fromAddress: user.mainWalletAddress,
+    toAddress: user[`${tokenType.toLowerCase()}WalletAddress`],
+    note: note || `Funded ${tokenType} wallet from main wallet`,
+    status: "completed",
+    createdAt: new Date().toISOString(),
+  }
+
+  transactions.push(newTransaction)
+  writeJSONFile(TRANSACTIONS_FILE, transactions)
+
+  res.json({
+    success: true,
+    message: `Successfully funded ${tokenType} wallet with ${amount}`,
+    transactionId,
+    transaction: {
+      id: transactionId,
+      type: "main-to-token",
+      amount,
+      tokenType,
+      fromName: user.name,
+      toName: user.name,
+      fromAddress: user.mainWalletAddress,
+      toAddress: user[`${tokenType.toLowerCase()}WalletAddress`],
+      note: note || `Funded ${tokenType} wallet from main wallet`,
+      status: "completed",
+      createdAt: new Date().toISOString(),
+    },
+  })
+})
+
+// Admin routes
+app.get("/api/admin/users", authenticateToken, isAdmin, (req, res) => {
+  const users = readJSONFile(USERS_FILE)
+  const usersWithoutPasswords = users.map(({ password, ...user }) => user)
+  res.json({ success: true, users: usersWithoutPasswords })
+})
+
+app.get("/api/admin/transactions", authenticateToken, isAdmin, (req, res) => {
+  const transactions = readJSONFile(TRANSACTIONS_FILE)
+  res.json({ success: true, transactions })
+})
+
+app.get("/api/admin/otp-codes", authenticateToken, isAdmin, (req, res) => {
+  const otpCodes = readJSONFile(OTP_CODES_FILE)
+  res.json({ success: true, otpCodes })
+})
+
+app.get("/api/admin/lookup-user", authenticateToken, isAdmin, (req, res) => {
+  const { address } = req.query
+
+  if (!address) {
+    return res.status(400).json({ success: false, message: "Address is required" })
+  }
+
+  const users = readJSONFile(USERS_FILE)
+  const user = users.find(
+    (u) => u.btcWalletAddress === address || u.ethWalletAddress === address || u.usdtWalletAddress === address,
+  )
+
+  if (!user) {
+    return res.json({ success: false, message: "User not found" })
+  }
+
+  const { password, ...userWithoutPassword } = user
+  res.json({ success: true, user: userWithoutPassword })
+})
+
+app.post("/api/admin/generate-otp", authenticateToken, isAdmin, (req, res) => {
+  const { userEmail, otpCode, expiryMinutes } = req.body
+
+  if (!userEmail || !otpCode || !expiryMinutes) {
+    return res.status(400).json({ success: false, message: "All fields are required" })
+  }
+
+  const users = readJSONFile(USERS_FILE)
+  const user = users.find((u) => u.email === userEmail)
+
+  if (!user) {
+    return res.status(404).json({ success: false, message: "User not found" })
+  }
+
+  const otpCodes = readJSONFile(OTP_CODES_FILE)
+  const newOtp = {
+    id: uuidv4(),
+    code: otpCode,
+    userEmail: userEmail,
+    userId: user.id,
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + expiryMinutes * 60 * 1000).toISOString(),
+    used: false,
+    usedAt: null,
+  }
+
+  otpCodes.push(newOtp)
+  writeJSONFile(OTP_CODES_FILE, otpCodes)
+
+  res.json({ success: true, message: "OTP generated successfully", otpCode })
 })
 
 app.post("/api/admin/fund-user", authenticateToken, isAdmin, (req, res) => {
   const { recipientAddress, amount, tokenType } = req.body
   const adminId = req.user.id
 
-  // Validate input
   if (!recipientAddress || !amount || amount <= 0 || !tokenType) {
     return res
       .status(400)
       .json({ success: false, message: "Valid recipient address, amount, and token type are required" })
   }
 
-  // Get users
   const users = readJSONFile(USERS_FILE)
   const admin = users.find((user) => user.id === adminId)
 
@@ -479,14 +624,12 @@ app.post("/api/admin/fund-user", authenticateToken, isAdmin, (req, res) => {
   const walletAddressField = `${tokenType.toLowerCase()}WalletAddress`
   const recipient = users.find((user) => user[walletAddressField] === recipientAddress)
 
-  // Check if recipient exists
   if (!recipient) {
     return res.status(404).json({ success: false, message: "Recipient not found" })
   }
 
   const balanceField = `${tokenType.toLowerCase()}Balance`
 
-  // Check if admin has enough balance
   if (admin[balanceField] < amount) {
     return res.status(400).json({ success: false, message: "Insufficient admin balance" })
   }
@@ -495,7 +638,6 @@ app.post("/api/admin/fund-user", authenticateToken, isAdmin, (req, res) => {
   admin[balanceField] -= amount
   recipient[balanceField] += amount
 
-  // Save updated users
   writeJSONFile(USERS_FILE, users)
 
   // Create transaction record
@@ -521,146 +663,24 @@ app.post("/api/admin/fund-user", authenticateToken, isAdmin, (req, res) => {
   res.json({ success: true, message: "User funded successfully" })
 })
 
-app.post("/api/admin/fund-main-account", authenticateToken, isAdmin, (req, res) => {
-  const { recipientAddress, amount } = req.body
-  const adminId = req.user.id
+app.delete("/api/admin/users/:userId", authenticateToken, isAdmin, (req, res) => {
+  const { userId } = req.params
 
-  // Validate input
-  if (!recipientAddress || !amount || amount <= 0) {
-    return res.status(400).json({ success: false, message: "Valid recipient address and amount are required" })
-  }
-
-  // Get users
   const users = readJSONFile(USERS_FILE)
-  const admin = users.find((user) => user.id === adminId)
-  const recipient = users.find((user) => user.mainWalletAddress === recipientAddress)
-
-  // Check if recipient exists
-  if (!recipient) {
-    return res.status(404).json({ success: false, message: "Recipient not found" })
-  }
-
-  // Check if admin has enough balance
-  if (admin.balance < amount) {
-    return res.status(400).json({ success: false, message: "Insufficient admin balance" })
-  }
-
-  // Update balances
-  admin.balance -= amount
-  recipient.balance += amount
-
-  // Save updated users
-  writeJSONFile(USERS_FILE, users)
-
-  // Create transaction record
-  const transactions = readJSONFile(TRANSACTIONS_FILE)
-  const newTransaction = {
-    id: uuidv4(),
-    type: "admin-funding-main",
-    amount,
-    tokenType: "MAIN",
-    fromUserId: admin.id,
-    toUserId: recipient.id,
-    fromName: "Admin",
-    toName: recipient.name,
-    toAddress: recipientAddress,
-    note: "Admin funding main account",
-    status: "completed",
-    createdAt: new Date().toISOString(),
-  }
-
-  transactions.push(newTransaction)
-  writeJSONFile(TRANSACTIONS_FILE, transactions)
-
-  res.json({ success: true, message: "User main account funded successfully" })
-})
-
-// Add a new route for funding token wallets from main wallet
-app.post("/api/transactions/fund-token", authenticateToken, (req, res) => {
-  const { tokenType, amount } = req.body
-  const userId = req.user.id
-
-  // Validate input
-  if (!tokenType || !amount || amount <= 0) {
-    return res.status(400).json({ success: false, message: "Valid token type and amount are required" })
-  }
-
-  // Get users
-  const users = readJSONFile(USERS_FILE)
-  const userIndex = users.findIndex((user) => user.id === userId)
+  const userIndex = users.findIndex((u) => u.id === userId)
 
   if (userIndex === -1) {
     return res.status(404).json({ success: false, message: "User not found" })
   }
 
-  const user = users[userIndex]
-
-  // Check if user has enough balance in main wallet
-  if (user.balance < amount) {
-    return res.status(400).json({ success: false, message: "Insufficient balance in main wallet" })
+  if (users[userIndex].isAdmin) {
+    return res.status(400).json({ success: false, message: "Cannot delete admin user" })
   }
 
-  // Determine which token balance to update
-  const tokenBalanceField = `${tokenType.toLowerCase()}Balance`
-
-  // Update balances
-  user.balance -= amount
-  user[tokenBalanceField] += amount
-
-  // Save updated users
+  users.splice(userIndex, 1)
   writeJSONFile(USERS_FILE, users)
 
-  // Create transaction record
-  const transactions = readJSONFile(TRANSACTIONS_FILE)
-  const newTransaction = {
-    id: uuidv4(),
-    type: "main-to-token",
-    amount,
-    tokenType,
-    fromUserId: user.id,
-    toUserId: user.id,
-    fromName: user.name,
-    toName: user.name,
-    fromAddress: user.mainWalletAddress,
-    toAddress: user[`${tokenType.toLowerCase()}WalletAddress`],
-    note: `Funded ${tokenType} wallet from main wallet`,
-    status: "completed",
-    createdAt: new Date().toISOString(),
-  }
-
-  transactions.push(newTransaction)
-  writeJSONFile(TRANSACTIONS_FILE, transactions)
-
-  res.json({ success: true, message: `${tokenType} wallet funded successfully` })
-})
-
-// Add this route to your server.js file, after your existing routes
-// This will provide a profile endpoint that returns the current user data
-
-app.get("/api/users/profile", authenticateToken, (req, res) => {
-  const userId = req.user.id
-  const users = readJSONFile(USERS_FILE)
-  const user = users.find((user) => user.id === userId)
-
-  if (!user) {
-    return res.status(404).json({ success: false, message: "User not found" })
-  }
-
-  // Return user data without password
-  const { password, ...userWithoutPassword } = user
-  res.json({ success: true, user: userWithoutPassword })
-})
-
-// Add a notifications endpoint (this won't actually send real notifications,
-// but it will simulate the server receiving the notification request)
-app.post("/api/notifications/send", authenticateToken, (req, res) => {
-  const { recipientAddress, tokenType, amount, message } = req.body
-
-  // In a real app, this would trigger a WebSocket message or push notification
-  console.log(`Notification for ${recipientAddress}: ${message}`)
-
-  // Just return success for now
-  res.json({ success: true, message: "Notification sent" })
+  res.json({ success: true, message: "User deleted successfully" })
 })
 
 // Serve HTML files
@@ -669,13 +689,11 @@ app.get("/", (req, res) => {
 })
 
 app.get("*", (req, res) => {
-  // For any other route, try to serve the file from the directory
   const filePath = path.join(__dirname, req.path)
 
   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
     res.sendFile(filePath)
   } else {
-    // If file doesn't exist, redirect to index
     res.redirect("/")
   }
 })
@@ -684,4 +702,3 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
-

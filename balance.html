@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SymbiTex - Balance</title>
+    <link rel="stylesheet" href="css/new-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        
+
+        <!-- Crypto Selector -->
+        <div class="crypto-selector" id="cryptoSelector">
+            <div class="selected-crypto">
+                <div class="crypto-icon btc">
+                    <i class="fab fa-bitcoin"></i>
+                </div>
+                <div class="crypto-info">
+                    <span class="crypto-label">Select Crypto</span>
+                    <span class="crypto-name">BTC</span>
+                    <span class="crypto-value">= $85994.93</span>
+                </div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <button class="profile-btn">
+                <i class="fas fa-user-circle"></i>
+            </button>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="balance-card">
+            <div class="balance-header">
+                <h2 id="accountTitle">BTC - Main Account</h2>
+                <button class="copy-btn" id="copyAddressBtn">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            <div class="wallet-address" id="walletAddress">1Sj30fi54aZGN2QXzPYILSFKRWjvMCEhUju6cx</div>
+            
+            <div class="main-balance">
+                <div class="balance-amount" id="mainBalance">49,999.0000900</div>
+                <div class="balance-fiat" id="balanceFiat">≈ $4,299,660,512.81</div>
+            </div>
+
+            <!-- Balance Details -->
+            <div class="balance-details">
+                <div class="balance-item">
+                    <span class="balance-label">Available</span>
+                    <span class="balance-value" id="availableBalance">49,999.0000900</span>
+                </div>
+                <div class="balance-item">
+                    <span class="balance-label">Unconfirmed</span>
+                    <span class="balance-value" id="unconfirmedBalance">0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="action-btn" id="sendBtn">
+                <div class="action-icon">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <span>SEND</span>
+            </button>
+            <button class="action-btn" id="sellBtn">
+                <div class="action-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <span>SELL</span>
+            </button>
+            <button class="action-btn" id="receiveBtn">
+                <div class="action-icon">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <span>RECEIVE</span>
+            </button>
+            <button class="action-btn" id="buyBtn">
+                <div class="action-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <span>BUY</span>
+            </button>
+        </div>
+
+        <!-- Transactions Section -->
+        <div class="transactions-section">
+            <h3>Transactions</h3>
+            <div class="no-transactions">
+                <p>No transactions yet</p>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <div class="nav-icon">
+                    <i class="fas fa-th-large"></i>
+                </div>
+                <span>Portfolio</span>
+            </a>
+            <a href="balance.html" class="nav-item active">
+                <div class="nav-icon">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <span>Balance</span>
+            </a>
+            <a href="#" class="nav-item">
+                <div class="nav-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <span>Buy</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <div class="nav-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <span>Settings</span>
+            </a>
+        </nav>
+
+        <!-- Crypto Selection Modal -->
+        <div class="modal" id="cryptoModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Select Cryptocurrency</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="crypto-option" data-crypto="BTC">
+                        <div class="crypto-icon btc">
+                            <i class="fab fa-bitcoin"></i>
+                        </div>
+                        <span>Bitcoin (BTC)</span>
+                    </div>
+                    <div class="crypto-option" data-crypto="ETH">
+                        <div class="crypto-icon eth">
+                            <i class="fab fa-ethereum"></i>
+                        </div>
+                        <span>Ethereum (ETH)</span>
+                    </div>
+                    <div class="crypto-option" data-crypto="USDT">
+                        <div class="crypto-icon usdt">
+                            <span class="usdt-symbol">₮</span>
+                        </div>
+                        <span>Tether (USDT)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/balance.js"></script>
+</body>
+</html>

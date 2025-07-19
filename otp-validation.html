@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SymbiTex - OTP Validation</title>
+  <link rel="stylesheet" href="css/new-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="otp-header">
+      <button class="back-btn" onclick="history.back()">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      <button class="profile-btn">
+        <i class="fas fa-user-circle"></i>
+      </button>
+    </header>
+
+    <!-- Loading Circle -->
+    <div class="loading-container">
+      <div class="loading-circle">
+        <div class="loading-text">loading</div>
+      </div>
+      <div class="loading-percentage">79%</div>
+      <div class="loading-bar">
+        <div class="loading-progress" style="width: 79%"></div>
+      </div>
+    </div>
+
+    <!-- OTP Section -->
+    <div class="otp-section">
+      <div class="otp-header-text">
+        <div class="play-icon">
+          <i class="fas fa-play"></i>
+        </div>
+        <h2>One Time Passcode (OTP)</h2>
+      </div>
+
+      <p class="otp-instruction">
+        Hello, kindly validate the 6 Digit OTP sent to your or
+      </p>
+
+      <form id="otpForm" class="otp-form">
+        <div class="form-group">
+          <label for="otpCode">Enter OTP Code</label>
+          <input 
+            type="text" 
+            id="otpCode" 
+            class="otp-input" 
+            placeholder="Your One Time Password Code is required..."
+            maxlength="6"
+            required
+          >
+        </div>
+
+        <div class="form-error" id="otpError"></div>
+
+        <button type="submit" class="validate-btn">
+          Validate OTP>>
+        </button>
+      </form>
+    </div>
+    <br>
+    <br>
+    <br>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="dashboard.html" class="nav-item">
+        <div class="nav-icon">
+          <i class="fas fa-home"></i>
+        </div>
+        <span>Home</span>
+      </a>
+      <a href="balance.html" class="nav-item">
+        <div class="nav-icon">
+          <i class="fas fa-credit-card"></i>
+        </div>
+        <span>Wallet</span>
+      </a>
+      <a href="#" class="nav-item">
+        <div class="nav-icon">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <span>Buy</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <div class="nav-icon">
+          <i class="fas fa-user"></i>
+        </div>
+        <span>Settings</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="js/otp-validation.js"></script>
+</body>
+</html>

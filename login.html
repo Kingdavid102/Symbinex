@@ -3,76 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Crypto Wallet</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>SymbiTex - Login</title>
+    <link rel="stylesheet" href="css/new-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="dark-mode">
+<body>
     <div class="app-container">
-        <div class="status-bar">
-            <div class="time">14:37</div>
-            <div class="recording-indicator">
-                <div class="recording-dot"></div>
-            </div>
-            <div class="status-icons">
-                <i class="fas fa-bluetooth-b"></i>
-                <div class="signal-icon">
-                    <div class="signal-bar"></div>
-                    <div class="signal-bar"></div>
-                    <div class="signal-bar"></div>
-                </div>
-                <div class="wifi-icon">
-                    <div class="wifi-bar"></div>
-                    <div class="wifi-bar"></div>
-                    <div class="wifi-bar"></div>
-                </div>
-                <div class="battery">
-                    <span>75%</span>
-                    <div class="battery-icon">
-                        <div class="battery-level"></div>
-                    </div>
-                </div>
-            </div>
+
+        <!-- Header -->
+        <div class="page-header">
+            <div class="site-url">🔒 symbitex</div>
         </div>
 
-        <div class="login-container">
-            <div class="logo-container">
-                <div class="logo">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="auth-logo">
                     <i class="fas fa-wallet"></i>
                 </div>
-                <h1>Crypto Wallet</h1>
-                <p class="tagline">Secure. Simple. Smart.</p>
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your account</p>
             </div>
             
             <form id="loginForm" class="auth-form">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="email" placeholder="Enter your email" required>
-                    </div>
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="password" placeholder="Enter your password" required>
-                    </div>
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
                 </div>
                 
                 <div class="form-error" id="loginError"></div>
                 
-                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                <button type="submit" class="auth-btn">Login</button>
                 
                 <div class="auth-links">
                     <p>Don't have an account? <a href="register.html">Sign up</a></p>
                 </div>
             </form>
         </div>
-    </div>
+
+<!-- Smartsupp Live Chat script -->
+<script type="text/javascript">
+var _smartsupp = _smartsupp || {};
+_smartsupp.key = '015a7dc05145c536f8e4d24cb53e9a51d75342f7';
+window.smartsupp||(function(d) {
+  var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+  s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+  c.type='text/javascript';c.charset='utf-8';c.async=true;
+  c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+})(document);
+</script>
+<noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
+        
 
     <script src="js/auth.js"></script>
 </body>
 </html>
-
