@@ -1,0 +1,62 @@
+[
+  {
+    "id": "440a29be-44cf-49c2-a62b-28b48f160284",
+    "code": "955510",
+    "userEmail": "emmy@gmail.com",
+    "userId": "1e77d84a-85ae-4dda-8e09-9a39be7edda8",
+    "createdAt": "2025-07-18T19:25:27.807Z",
+    "expiresAt": "2025-07-18T19:26:27.807Z",
+    "used": true,
+    "usedAt": "2025-07-18T19:26:25.127Z"
+  },
+  {
+    "id": "0a620f01-0d89-4d5c-8068-10cc4d955cb9",
+    "code": "112359",
+    "userEmail": "emmy@gmail.com",
+    "userId": "1e77d84a-85ae-4dda-8e09-9a39be7edda8",
+    "createdAt": "2025-07-18T19:28:38.994Z",
+    "expiresAt": "2025-07-18T19:31:38.994Z",
+    "used": true,
+    "usedAt": "2025-07-18T19:29:43.289Z"
+  },
+  {
+    "id": "9b1ce250-31ac-4953-8a38-698d43725690",
+    "code": "501214",
+    "userEmail": "emmy@gmail.com",
+    "userId": "c8e55b37-5f69-468a-87e5-fbdd2ac6831a",
+    "createdAt": "2025-07-18T20:42:52.456Z",
+    "expiresAt": "2025-07-18T20:47:52.456Z",
+    "used": false,
+    "usedAt": null
+  },
+  {
+    "id": "308a078a-79a0-4b7c-9e1e-a5577d38e7f7",
+    "code": "604398",
+    "userEmail": "emmy@gmail.com",
+    "userId": "d00c6e36-51ac-4d76-b489-1473518a1a46",
+    "createdAt": "2025-07-18T22:13:36.199Z",
+    "expiresAt": "2025-07-18T22:15:36.199Z",
+    "used": false,
+    "usedAt": null
+  },
+  {
+    "id": "5d80f707-a29a-4314-bfc7-4ca92cd2c704",
+    "code": "939249",
+    "userEmail": "emmy@gmail.com",
+    "userId": "d00c6e36-51ac-4d76-b489-1473518a1a46",
+    "createdAt": "2025-07-19T12:57:02.686Z",
+    "expiresAt": "2025-07-20T12:57:02.686Z",
+    "used": true,
+    "usedAt": "2025-07-19T12:57:18.558Z"
+  },
+  {
+    "id": "94a972df-8365-4e61-a79e-be748d448537",
+    "code": "215133",
+    "userEmail": "emmy@gmail.com",
+    "userId": "d00c6e36-51ac-4d76-b489-1473518a1a46",
+    "createdAt": "2025-07-19T19:15:25.337Z",
+    "expiresAt": "2025-07-19T19:45:25.337Z",
+    "used": true,
+    "usedAt": "2025-07-19T19:15:53.762Z"
+  }
+]
