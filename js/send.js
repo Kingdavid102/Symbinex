@@ -64,6 +64,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return
       }
 
+      // Show loading state
+      const submitBtn = tokenForm.querySelector(".submit-btn")
+      const originalText = submitBtn.textContent
+      submitBtn.textContent = "Sending..."
+      submitBtn.disabled = true
+
       // Make API request to send token
       fetch("/api/transactions/send", {
         method: "POST",
@@ -81,18 +87,38 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            // Show success message
-            alert(`Successfully sent ${amount} ${tokenType} to ${recipientAddress}`)
+            // Update current user balance immediately
+            const updatedUser = JSON.parse(localStorage.getItem("currentUser"))
+            const balanceField = `${tokenType.toLowerCase()}Balance`
+            updatedUser[balanceField] = (updatedUser[balanceField] || 0) - Number.parseFloat(amount)
+            localStorage.setItem("currentUser", JSON.stringify(updatedUser))
 
-            // Redirect to dashboard
-            window.location.href = "dashboard.html"
+            // Show transaction receipt
+            showTransactionReceipt({
+              type: "user-transfer",
+              amount: Number.parseFloat(amount),
+              tokenType: tokenType,
+              fromName: currentUser.name,
+              toName: data.transaction.toName,
+              fromAddress: data.transaction.fromAddress,
+              toAddress: recipientAddress,
+              note: note || `${tokenType} transfer`,
+              date: new Date().toISOString(),
+              txId: data.transactionId,
+            })
           } else {
             errorElement.textContent = data.message || "Failed to send funds"
+            // Reset button
+            submitBtn.textContent = originalText
+            submitBtn.disabled = false
           }
         })
         .catch((error) => {
           errorElement.textContent = "An error occurred. Please try again."
           console.error("Send funds error:", error)
+          // Reset button
+          submitBtn.textContent = originalText
+          submitBtn.disabled = false
         })
     })
   }
@@ -115,6 +141,12 @@ document.addEventListener("DOMContentLoaded", () => {
         errorElement.textContent = "Amount must be greater than 0"
         return
       }
+
+      // Show loading state
+      const submitBtn = mainWalletForm.querySelector(".submit-btn")
+      const originalText = submitBtn.textContent
+      submitBtn.textContent = "Sending..."
+      submitBtn.disabled = true
 
       // Make API request to send funds from main wallet
       fetch("/api/transactions/send-main", {
@@ -143,24 +175,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Show transaction receipt
             showTransactionReceipt({
-              type: "main-to-main",
+              type: "main-transfer",
               amount: Number.parseFloat(amount),
-              token: "MAIN",
-              from: "My Main Wallet",
-              to: recipientAddress,
+              tokenType: "MAIN",
+              fromName: currentUser.name,
+              toName: data.transaction.toName,
+              fromAddress: data.transaction.fromAddress,
+              toAddress: recipientAddress,
+              note: note || "Main wallet transfer",
               date: new Date().toISOString(),
-              txId: data.transactionId || generateTxId(),
+              txId: data.transactionId,
             })
-
-            // Redirect to dashboard
-            window.location.href = "dashboard.html"
           } else {
             errorElement.textContent = data.message || "Failed to send funds"
+            // Reset button
+            submitBtn.textContent = originalText
+            submitBtn.disabled = false
           }
         })
         .catch((error) => {
           errorElement.textContent = "An error occurred. Please try again."
           console.error("Send funds error:", error)
+          // Reset button
+          submitBtn.textContent = originalText
+          submitBtn.disabled = false
         })
     })
   }
@@ -183,6 +221,12 @@ document.addEventListener("DOMContentLoaded", () => {
         errorElement.textContent = "Amount must be greater than 0"
         return
       }
+
+      // Show loading state
+      const submitBtn = fundTokenForm.querySelector(".submit-btn")
+      const originalText = submitBtn.textContent
+      submitBtn.textContent = "Processing..."
+      submitBtn.disabled = true
 
       // Make API request to fund token wallet from main wallet
       fetch("/api/transactions/fund-token", {
@@ -217,22 +261,28 @@ document.addEventListener("DOMContentLoaded", () => {
             showTransactionReceipt({
               type: "main-to-token",
               amount: Number.parseFloat(amount),
-              token: tokenType,
-              from: "Main Wallet",
-              to: `${tokenType} Wallet`,
+              tokenType: tokenType,
+              fromName: currentUser.name,
+              toName: currentUser.name,
+              fromAddress: data.transaction.fromAddress,
+              toAddress: data.transaction.toAddress,
+              note: note || `Funded ${tokenType} wallet from main wallet`,
               date: new Date().toISOString(),
-              txId: data.transactionId || generateTxId(),
+              txId: data.transactionId,
             })
-
-            // Redirect to dashboard
-            window.location.href = "dashboard.html"
           } else {
             errorElement.textContent = data.message || "Failed to fund token wallet"
+            // Reset button
+            submitBtn.textContent = originalText
+            submitBtn.disabled = false
           }
         })
         .catch((error) => {
           errorElement.textContent = "An error occurred. Please try again."
           console.error("Fund token error:", error)
+          // Reset button
+          submitBtn.textContent = originalText
+          submitBtn.disabled = false
         })
     })
   }
@@ -258,51 +308,81 @@ document.addEventListener("DOMContentLoaded", () => {
     const modal = document.createElement("div")
     modal.className = "modal active"
     modal.id = "receiptModal"
+    modal.style.zIndex = "10000"
 
     const formattedDate = new Date(transaction.date).toLocaleString()
+    const transactionTypeDisplay = getTransactionTypeDisplay(transaction.type)
+    const statusIcon = getStatusIcon(transaction.type)
 
     modal.innerHTML = `
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3 class="modal-title">Transaction Receipt</h3>
-          <button class="modal-close">&times;</button>
+      <div class="modal-content" style="max-width: 500px; margin: 20px auto;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+          <h3 class="modal-title" style="margin: 0; font-size: 20px; font-weight: 600;">Transaction Receipt</h3>
+          <button class="modal-close" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 24px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer;">&times;</button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" style="padding: 0;">
           <div id="receiptContent">
-            <div style="text-align: center; margin-bottom: 20px;">
-              <div style="font-size: 48px; color: var(--primary-color);">
-                <i class="fas fa-exchange-alt"></i>
+            <!-- Transaction Status -->
+            <div style="text-align: center; padding: 30px 20px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+              <div style="font-size: 48px; margin-bottom: 15px;">
+                ${statusIcon}
               </div>
-              <h2 style="margin: 12px 0;">${transaction.type === "main-to-token" ? "Fund Token Wallet" : "Send to Main Wallet"}</h2>
-              <div style="font-size: 24px; font-weight: 700; margin: 16px 0;">${transaction.amount} ${transaction.token}</div>
-            </div>
-            
-            <div style="background-color: var(--card-color); border-radius: var(--border-radius); padding: 16px; margin-bottom: 16px;">
-              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
-                <div style="color: var(--text-secondary);">Date</div>
-                <div>${formattedDate}</div>
+              <h2 style="margin: 0 0 10px; font-size: 24px; font-weight: 600;">${transactionTypeDisplay}</h2>
+              <div style="font-size: 32px; font-weight: 700; margin: 15px 0;">
+                ${transaction.amount} ${transaction.tokenType}
               </div>
-              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
-                <div style="color: var(--text-secondary);">From</div>
-                <div>${transaction.from}</div>
-              </div>
-              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
-                <div style="color: var(--text-secondary);">To</div>
-                <div>${transaction.to}</div>
-              </div>
-              <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
-                <div style="color: var(--text-secondary);">Transaction ID</div>
-                <div style="word-break: break-all;">${transaction.txId}</div>
-              </div>
-              <div style="display: flex; justify-content: space-between; padding: 8px 0;">
-                <div style="color: var(--text-secondary);">Status</div>
-                <div>Completed</div>
+              <div style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; display: inline-block; font-size: 14px; font-weight: 500;">
+                ✅ Completed Successfully
               </div>
             </div>
             
-            <button id="printReceiptBtn" style="width: 100%; padding: 12px; background-color: var(--card-color); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; font-weight: 600;">
-              <i class="fas fa-print"></i> Print Receipt
-            </button>
+            <!-- Transaction Details -->
+            <div style="padding: 25px; background: white;">
+              <div style="background: #f8f9fa; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                  <div style="color: #6c757d; font-weight: 500;">Transaction ID</div>
+                  <div style="font-family: monospace; font-size: 14px; word-break: break-all; max-width: 200px; text-align: right;">${transaction.txId}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                  <div style="color: #6c757d; font-weight: 500;">Date & Time</div>
+                  <div style="font-weight: 500;">${formattedDate}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                  <div style="color: #6c757d; font-weight: 500;">From</div>
+                  <div style="font-weight: 500; max-width: 200px; text-align: right; word-break: break-word;">${transaction.fromName}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                  <div style="color: #6c757d; font-weight: 500;">To</div>
+                  <div style="font-weight: 500; max-width: 200px; text-align: right; word-break: break-word;">${transaction.toName}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                  <div style="color: #6c757d; font-weight: 500;">From Address</div>
+                  <div style="font-family: monospace; font-size: 12px; max-width: 200px; text-align: right; word-break: break-all;">${formatAddress(transaction.fromAddress)}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                  <div style="color: #6c757d; font-weight: 500;">To Address</div>
+                  <div style="font-family: monospace; font-size: 12px; max-width: 200px; text-align: right; word-break: break-all;">${formatAddress(transaction.toAddress)}</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                  <div style="color: #6c757d; font-weight: 500;">Network Fee</div>
+                  <div style="font-weight: 500; color: #28a745;">Free</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 12px 0;">
+                  <div style="color: #6c757d; font-weight: 500;">Note</div>
+                  <div style="font-weight: 500; max-width: 200px; text-align: right; word-break: break-word;">${transaction.note}</div>
+                </div>
+              </div>
+              
+              <!-- Action Buttons -->
+              <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button id="printReceiptBtn" style="flex: 1; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  <i class="fas fa-print"></i> Print Receipt
+                </button>
+                <button id="closeReceiptBtn" style="flex: 1; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  <i class="fas fa-check"></i> Done
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -312,55 +392,142 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add event listener to close modal
     const closeBtn = modal.querySelector(".modal-close")
-    closeBtn.addEventListener("click", () => {
+    const closeBtnBottom = document.getElementById("closeReceiptBtn")
+
+    function closeModal() {
       document.body.removeChild(modal)
-      window.location.href = "dashboard.html"
-    })
+      // Redirect to dashboard after closing
+      setTimeout(() => {
+        window.location.href = "dashboard.html"
+      }, 100)
+    }
+
+    closeBtn.addEventListener("click", closeModal)
+    closeBtnBottom.addEventListener("click", closeModal)
 
     // Print receipt functionality
     const printReceiptBtn = document.getElementById("printReceiptBtn")
     if (printReceiptBtn) {
       printReceiptBtn.addEventListener("click", () => {
         const receiptContent = document.getElementById("receiptContent")
-        const printWindow = window.open("", "", "width=600,height=600")
-        printWindow.document.write("<html><head><title>Transaction Receipt</title>")
-        printWindow.document.write(
-          "<style>body { font-family: Arial, sans-serif; padding: 20px; } .receipt-header { text-align: center; margin-bottom: 20px; } .receipt-title { font-size: 18px; font-weight: bold; } .receipt-amount { text-align: center; margin: 20px 0; font-size: 24px; font-weight: bold; } .receipt-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; } .receipt-footer { text-align: center; margin-top: 20px; color: #666; }</style>",
-        )
-        printWindow.document.write("</head><body>")
+        const printWindow = window.open("", "", "width=800,height=600")
         printWindow.document.write(`
-          <div class="receipt-header">
-            <h1 class="receipt-title">Transaction Receipt</h1>
-            <p>${transaction.type === "main-to-token" ? "Fund Token Wallet" : "Send to Main Wallet"}</p>
-          </div>
-          <div class="receipt-amount">${transaction.amount} ${transaction.token}</div>
-          <div class="receipt-details">
-            <div class="receipt-row">
-              <div>Date</div>
-              <div>${formattedDate}</div>
-            </div>
-            <div class="receipt-row">
-              <div>From</div>
-              <div>${transaction.from}</div>
-            </div>
-            <div class="receipt-row">
-              <div>To</div>
-              <div>${transaction.to}</div>
-            </div>
-            <div class="receipt-row">
-              <div>Transaction ID</div>
-              <div>${transaction.txId}</div>
-            </div>
-            <div class="receipt-row">
-              <div>Status</div>
-              <div>Completed</div>
-            </div>
-          </div>
-          <div class="receipt-footer">
-            <p>Thank you for using our service</p>
-          </div>
+          <html>
+            <head>
+              <title>Transaction Receipt</title>
+              <style>
+                body { 
+                  font-family: Arial, sans-serif; 
+                  padding: 20px; 
+                  line-height: 1.6;
+                  color: #333;
+                }
+                .receipt-header { 
+                  text-align: center; 
+                  margin-bottom: 30px; 
+                  padding: 20px;
+                  background: #f8f9fa;
+                  border-radius: 8px;
+                }
+                .receipt-title { 
+                  font-size: 24px; 
+                  font-weight: bold; 
+                  margin-bottom: 10px;
+                }
+                .receipt-amount { 
+                  text-align: center; 
+                  margin: 30px 0; 
+                  font-size: 32px; 
+                  font-weight: bold; 
+                  color: #007bff;
+                }
+                .receipt-details {
+                  background: #f8f9fa;
+                  padding: 20px;
+                  border-radius: 8px;
+                  margin: 20px 0;
+                }
+                .receipt-row { 
+                  display: flex; 
+                  justify-content: space-between; 
+                  padding: 10px 0; 
+                  border-bottom: 1px solid #dee2e6; 
+                }
+                .receipt-row:last-child {
+                  border-bottom: none;
+                }
+                .receipt-label {
+                  font-weight: 600;
+                  color: #6c757d;
+                }
+                .receipt-value {
+                  font-weight: 500;
+                  word-break: break-word;
+                }
+                .receipt-footer { 
+                  text-align: center; 
+                  margin-top: 30px; 
+                  color: #6c757d; 
+                  font-size: 14px;
+                }
+                .status-badge {
+                  background: #28a745;
+                  color: white;
+                  padding: 4px 12px;
+                  border-radius: 20px;
+                  font-size: 12px;
+                  font-weight: 600;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="receipt-header">
+                <h1 class="receipt-title">Transaction Receipt</h1>
+                <p>${transactionTypeDisplay}</p>
+                <span class="status-badge">✅ Completed Successfully</span>
+              </div>
+              <div class="receipt-amount">${transaction.amount} ${transaction.tokenType}</div>
+              <div class="receipt-details">
+                <div class="receipt-row">
+                  <div class="receipt-label">Transaction ID</div>
+                  <div class="receipt-value">${transaction.txId}</div>
+                </div>
+                <div class="receipt-row">
+                  <div class="receipt-label">Date & Time</div>
+                  <div class="receipt-value">${formattedDate}</div>
+                </div>
+                <div class="receipt-row">
+                  <div class="receipt-label">From</div>
+                  <div class="receipt-value">${transaction.fromName}</div>
+                </div>
+                <div class="receipt-row">
+                  <div class="receipt-label">To</div>
+                  <div class="receipt-value">${transaction.toName}</div>
+                </div>
+                <div class="receipt-row">
+                  <div class="receipt-label">From Address</div>
+                  <div class="receipt-value">${transaction.fromAddress}</div>
+                </div>
+                <div class="receipt-row">
+                  <div class="receipt-label">To Address</div>
+                  <div class="receipt-value">${transaction.toAddress}</div>
+                </div>
+                <div class="receipt-row">
+                  <div class="receipt-label">Network Fee</div>
+                  <div class="receipt-value">Free</div>
+                </div>
+                <div class="receipt-row">
+                  <div class="receipt-label">Note</div>
+                  <div class="receipt-value">${transaction.note}</div>
+                </div>
+              </div>
+              <div class="receipt-footer">
+                <p>Thank you for using our wallet service</p>
+                <p>This is an automatically generated receipt</p>
+              </div>
+            </body>
+          </html>
         `)
-        printWindow.document.write("</body></html>")
         printWindow.document.close()
         printWindow.focus()
         setTimeout(() => {
@@ -373,10 +540,41 @@ document.addEventListener("DOMContentLoaded", () => {
     // Close modal when clicking outside
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
-        document.body.removeChild(modal)
-        window.location.href = "dashboard.html"
+        closeModal()
       }
     })
   }
-})
 
+  // Helper functions for receipt display
+  function getTransactionTypeDisplay(type) {
+    switch (type) {
+      case "user-transfer":
+        return "Token Transfer"
+      case "main-transfer":
+        return "Main Wallet Transfer"
+      case "main-to-token":
+        return "Fund Token Wallet"
+      default:
+        return "Transaction"
+    }
+  }
+
+  function getStatusIcon(type) {
+    switch (type) {
+      case "user-transfer":
+        return "🔄"
+      case "main-transfer":
+        return "💸"
+      case "main-to-token":
+        return "💰"
+      default:
+        return "✅"
+    }
+  }
+
+  function formatAddress(address) {
+    if (!address) return "N/A"
+    if (address.length <= 20) return address
+    return address.substring(0, 10) + "..." + address.substring(address.length - 10)
+  }
+})

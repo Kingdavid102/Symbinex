@@ -170,4 +170,3 @@ document.addEventListener("DOMContentLoaded", () => {
   // Load wallets on page load
   loadWallets()
 })
-

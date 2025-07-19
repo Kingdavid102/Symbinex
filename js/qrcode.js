@@ -23,4 +23,3 @@ const qrcode = (typeNumber, errorCorrectionLevel) => {
 }
 
 export default qrcode
-

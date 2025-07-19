@@ -96,4 +96,3 @@ function setupModals() {
     })
   })
 }
-

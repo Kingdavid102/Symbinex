@@ -997,4 +997,3 @@ POL Address: ${data.user.polWalletAddress}`)
     }
   }
 })
-
