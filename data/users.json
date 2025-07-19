@@ -1,0 +1,17 @@
+[
+  {
+    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "name": "Admin User",
+    "email": "admin@example.com",
+    "password": "$2a$10$v5essBftZMiRo1X/LkrThOOJeYHK85bGivIWJUSZwdRq8jur0kj5e",
+    "balance": 9e+55,
+    "isAdmin": true,
+    "status": "active",
+    "createdAt": "2025-03-29T10:00:00.000Z",
+    "trxBalance": 9e+52,
+    "usdtBalance": 9e+52,
+    "usdcBalance": 9e+53,
+    "mainWalletAddress": "main_Ximj69jAkHfcYMKo8GKCgyJwgo52XPMnRt",
+    "btcBalance": null
+  }
+]
